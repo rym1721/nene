@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>instagram.exe — santa muerte</title>
+
+  <!-- Poppins для цифр -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #0f0f0f;
+      --window: #222;
+      --menu: #333;
+      --border: #444;
+      --muted: #bdbdbd;
+    }
+
+    /* базовая сетка */
+    html,body{height:100%;margin:0;}
+    body {
+      --bg:#111;
+      --window:#222;
+      --title:#333;
+      --menu:#444;
+      --border:#555;
+      --text:#ddd;
+      background:var(--bg);
+      font-family: "Courier New", monospace;
+      color:var(--text);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:20px 10px;
+      box-sizing:border-box;
+    }
+
+    .window {
+      width: 400px;
+      height: 100vh;
+      background: var(--window);
+      border: 2px solid var(--border);
+      box-shadow: 0 0 15px rgba(0,0,0,.7);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .titlebar {
+      background: #333;
+      padding: 5px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+    }
+    .titlebar .left{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .titlebar .title{ font-size:14px; }
+    .titlebar .controls{ font-size:14px; opacity:.95; }
+
+    .back-btn{
+      display:none;
+      background: #444;
+      color: #fff;
+      border:none;
+      padding:4px 8px;
+      border-radius:4px;
+      cursor:pointer;
+      font-size:13px;
+    }
+
+    .menu{
+      background:var(--menu);
+      padding:6px 8px;
+      font-size:12px;
+      border-bottom:1px solid var(--border);
+    }
+
+    .content {
+      flex: 1;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .profile { padding: 10px; }
+    .profile img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid #888;
+      object-fit: cover;
+    }
+    .stats {
+      margin: 10px 0;
+      font-size: 14px;
+      display: flex;
+      justify-content: flex-start;
+    }
+    .stat-item {
+      margin-right: 15px;
+      text-align: left;
+    }
+    .number {
+      display: block;
+      font-family: "Poppins", sans-serif;
+      font-size: 16px;
+    }
+    .label {
+      display: block;
+      font-size: 12px;
+    }
+    .bio { font-size: 13px; margin-bottom: 10px; }
+    .buttons button {
+      background: #555;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      margin: 3px;
+      cursor: pointer;
+    }
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:5px;
+      padding:14px;
+    }
+    .gallery img{
+      width:100%;
+      height:110px;
+      object-fit:cover;
+      cursor:pointer;
+      display:block;
+    }
+
+    .feed{ display:none; padding:8px; }
+    .post{
+      background:var(--window);
+      border:2px solid var(--border);
+      margin:10px 0;
+      overflow:hidden;
+    }
+    .post-head{
+      display:flex;
+      align-items:center;
+      gap:19px;
+      padding:11px;
+      background:#2b2b2b;
+      border-bottom:1px solid var(--border);
+    }
+    .post-head img{
+      width:30px;
+      height:30px;
+      border-radius:50%;
+      border:1px solid #888;
+      object-fit:cover;
+    }
+    .post-head .uname{
+      font-weight:bold;
+      font-size:20px;
+      text-transform:lowercase;
+    }
+
+    .post-img img{
+      width:100%;
+      height:auto;
+      display:block;
+      object-fit:cover;
+    }
+
+    .post-body{ padding:8px 10px; color:var(--muted); font-size:13px; }
+    .likes{ font-family:"Poppins", sans-serif; font-size:14px; color:#eee; margin-bottom:6px; }
+    .caption{ margin-bottom:6px; color:#d7d7d7; }
+
+    /* footer (музыка) — виден всегда */
+    .footer {
+      flex-shrink: 0;
+      background: var(--menu);
+      padding: 6px 10px;
+      color: #cfcfcf;
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      height: 36px;
+      box-sizing: border-box;
+    }
+    .marquee{
+      overflow:hidden;
+      white-space:nowrap;
+      width:100%;
+    }
+    .marquee span{
+      display:inline-block;
+      padding-left:100%;
+      animation: scroll 14s linear infinite;
+    }
+    @keyframes scroll{
+      from{ transform: translateX(0); }
+      to{ transform: translateX(-100%); }
+    }
+
+    /* адаптивные мелочи */
+    @media (max-width:420px){
+      .window{ height:100vh; }
+      .profile{ padding:10px; }
+      .gallery{ gap:4px; padding:8px; }
+    }
+  </style>
+</head>
+<body> <div class="window" role="application" 
+  aria-label="instagram retro window"> 
+  <div class="titlebar"> 
+    <div class="left"> 
+      <button id="backBtn" 
+      class="back-btn" 
+      title="назад">←</button> 
+      <div class="title">instagram.exe</div> 
+    </div> 
+      <div class="controls">☐ ✕</div> 
+    </div> 
+    <div class="menu">File Edit View Options Help</div> 
+    <div class="content" id="content"> 
+      <div id="profileBlock"> 
+        <div class="profile"> 
+          <div class="profile-row"> 
+            <img src="https://i.pinimg.com/736x/13/8d/31/138d314afbfff56f043910ec3af1bec2.jpg" alt="avatar"> <div> 
+              <div class="name">𝟷𝟛.𝟷𝟘 ೃ❀</div> 
+              <div class="stats"> 
+                <div class="stat-item"> 
+                  <span class="number">73</span> 
+                  <span class="label">posts</span> 
+                </div> 
+                <div class="stat-item"> 
+                  <span class="number">41</span> 
+                  <span class="label">followers</span> 
+                </div> 
+                <div class="stat-item"> 
+                  <span class="number">487</span> 
+                  <span class="label">following</span> 
+                </div> 
+              </div> 
+            </div> 
+          </div> 
+          <div class="bio">мяу</div> 
+          <div class="buttons"> 
+            <button id="followingBtn">following</button> 
+            <button id="messageBtn">message</button> 
+          </div> 
+        </div>
+
+        <div class="gallery" id="galleryBlock" aria-label="gallery">
+          <img src="https://i.pinimg.com/1200x/75/99/0d/75990d1a603badc4f1bef7cfec3b4cf2.jpg" alt="pic1" data-index="0"
+               onerror="this.onerror=null;this.src='https://via.placeholder.com/110x110?text=No+img'">
+          <img src="https://i.pinimg.com/736x/d9/50/d0/d950d03f259bf6c2f4b879ba28cb1cb4.jpg" alt="pic2" data-index="1"
+               onerror="this.onerror=null;this.src='https://via.placeholder.com/110x110?text=No+img'">
+          <img src="https://i.pinimg.com/736x/60/1f/3c/601f3cc45a0b5a5d4f3eb96979716f08.jpg" alt="pic3" data-index="2"
+               onerror="this.onerror=null;this.src='https://via.placeholder.com/110x110?text=No+img'">
+          <img src="https://i.pinimg.com/736x/20/80/3f/20803f9baf75199aa2ecd1bc067fa508.jpg" alt="pic4" data-index="3"
+               onerror="this.onerror=null;this.src='https://via.placeholder.com/110x110?text=No+img'">
+          <img src="https://i.pinimg.com/736x/14/16/86/141686d2d28487e4ed0d719a32794955.jpg" alt="pic5" data-index="4"
+               onerror="this.onerror=null;this.src='https://via.placeholder.com/110x110?text=No+img'">
+          <img src="https://i.pinimg.com/736x/23/01/a0/2301a0177b7508c420d22b874972a511.jpg" alt="pic6" data-index="5"
+               onerror="this.onerror=null;this.src='https://via.placeholder.com/110x110?text=No+img'">
+        </div>
+      </div>
+
+      <!-- FEED (вертикальные посты) -->
+      <div id="feedBlock" class="feed" aria-live="polite"></div>
+    </div>
+
+    <!-- footer: song / marquee -->
+    <div class="footer">
+      <div class="marquee" aria-hidden="false"><span>♫ Безмятежнось - Шизоняшка ♫</span></div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // данные (исправлен синтаксис — добавлены запятые между элементами)
+      const images = [
+        "https://i.pinimg.com/1200x/75/99/0d/75990d1a603badc4f1bef7cfec3b4cf2.jpg",
+        "https://i.pinimg.com/736x/d9/50/d0/d950d03f259bf6c2f4b879ba28cb1cb4.jpg",
+        "https://i.pinimg.com/736x/60/1f/3c/601f3cc45a0b5a5d4f3eb96979716f08.jpg",
+        "https://i.pinimg.com/736x/20/80/3f/20803f9baf75199aa2ecd1bc067fa508.jpg",
+        "https://i.pinimg.com/736x/14/16/86/141686d2d28487e4ed0d719a32794955.jpg",
+        "https://i.pinimg.com/736x/23/01/a0/2301a0177b7508c420d22b874972a511.jpg"
+      ];
+      const likes = [38,53,46,44,57,32];
+      const comments = [56,78,34,20,61,17];
+      const times = ["1 day ago","2 days ago","5 days ago","1 week ago","2 weeks ago","4 weeks ago"];
+      const captions = [
+        "what is to give light must endure burning.",
+        "she was chaos and beauty intertwined.",
+        "the flower that blooms in adversity is the rarest and most beautiful of all.",
+        "you can’t rewind life, but you can replay the song.",
+        "pink is the color of contradiction — it’s both delicate and defiant.",
+        "the truth is rarely pure and never simple."
+      ];
+
+      // элементы
+      const feed = document.getElementById('feedBlock');
+      const profileBlock = document.getElementById('profileBlock');
+      const galleryBlock = document.getElementById('galleryBlock');
+      const backBtn = document.getElementById('backBtn');
+      const followingBtn = document.getElementById('followingBtn');
+      const messageBtn = document.getElementById('messageBtn');
+      const content = document.getElementById('content');
+
+      // строим вертикальную ленту (первые сверху)
+      function buildFeed(){
+        feed.innerHTML = '';
+        for(let i = 0; i < images.length; i++){
+          const post = document.createElement('article');
+          post.className = 'post';
+          post.dataset.index = i;
+          post.innerHTML = `
+             <div class="post-head">
+              <img src="https://i.pinimg.com/736x/13/8d/31/138d314afbfff56f043910ec3af1bec2.jpg" alt="avatar">
+              <div class="uname">𝟷𝟛.𝟷𝟘 ೃ❀</div>
+            </div>
+            <div class="post-img"><img src="${images[i]}" alt="post image"></div>
+            <div class="post-body">
+              <div class="likes">🖤 ${likes[i]} &nbsp; • &nbsp; 🗨️ ${comments[i]}</div>
+              <div class="caption"><strong>${captions[i] || ''}</strong></div>
+              <div class="view-comments">view all ${comments[i]} comments</div>
+              <div class="time">${times[i]}</div>
+            </div>
+          `;
+          feed.appendChild(post);
+        }
+      }
+
+      // открыть feed, показать сверху (первый пост) или прокрутить к индексу
+      function openFeed(scrollIndex = 0){
+        buildFeed();
+        profileBlock.style.display = 'none';
+        feed.style.display = 'block';
+        backBtn.style.display = 'inline-block';
+        // сначала сброс прокрутки, затем плавный скролл к элементу
+        content.scrollTop = 0;
+        setTimeout(()=> {
+          const posts = feed.querySelectorAll('.post');
+          if(posts[scrollIndex]){
+            posts[scrollIndex].scrollIntoView({behavior:'smooth', block:'start'});
+          }
+        }, 80);
+      }
+
+      function closeFeed(){
+        feed.style.display = 'none';
+        profileBlock.style.display = 'block';
+        backBtn.style.display = 'none';
+        content.scrollTop = 0;
+      }
+
+      // события
+      followingBtn.addEventListener('click', ()=> openFeed(0)); // открыть первый пост сверху
+      backBtn.addEventListener('click', closeFeed);
+      messageBtn.addEventListener('click', ()=> {
+        window.open('https://t.me/fraildove','_blank');
+      });
+
+      // клик по миниатюре — открыть ленту и прокрутить к посту
+      galleryBlock.addEventListener('click', (e)=>{
+        const img = e.target.closest('img');
+        if(!img) return;
+        const idx = Number(img.dataset.index);
+        if(!isNaN(idx)) openFeed(idx);
+      });
+
+      // начальное состояние
+      feed.style.display = 'none';
+      backBtn.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
